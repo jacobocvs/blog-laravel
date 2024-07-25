@@ -1,6 +1,6 @@
 <!doctype html>
 
-<title>Laravel From Scratch Blog</title>
+<title>{{ config('app.name') }}</title>
 <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
 
 <body style="font-family: Open Sans, sans-serif">
     <section class="px-6 py-8">
-        <nav class="md:flex md:justify-between md:items-center">
+        <nav class="sticky top-0 z-50 bg-white md:flex md:justify-between md:items-center">
             <div>
                 <a href="/">
                     <img src="/images/logo.png" alt="Hintport Logo" width="165" height="16">
@@ -100,7 +100,7 @@
             <div class="mt-10">
                 <div class="relative inline-block mx-auto lg:bg-gray-200 rounded-full">
 
-                    <form method="POST" action="/newsletter" class="lg:flex text-sm">
+                    <form method="POST" action="/newsletter/#newsletter" class="lg:flex text-sm">
                         @csrf
 
                         <div class="lg:py-3 lg:px-5 flex items-center">
