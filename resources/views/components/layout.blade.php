@@ -1,6 +1,7 @@
 <!doctype html>
 
 <title>{{ config('app.name') }}</title>
+<link rel="icon" href="/hintport.ico" type="image/x-icon">
 <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://unpkg.com/@tailwindcss/typography@0.4.0/dist/typography.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.gstatic.com">
