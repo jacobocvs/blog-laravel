@@ -1,13 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish New Post</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body>
 <x-layout>
     <x-setting heading="Publish New Post">
-        <form method="POST" action="/admin/posts" enctype="multipart/form-data">
+        <form method="POST" action="/admin/posts" enctype="multipart/form-data" id="postForm">
             @csrf
 
             <x-form.input name="title" required />
             <x-form.input name="slug" required />
             <x-form.input name="thumbnail" type="file" required />
             <x-form.textarea name="excerpt" required />
-            <x-form.post-textarea name="body" required />
+
+            <!-- Replace the textarea for 'body' with a div for Quill -->
+            <div id="editor-container" style="height: 400px;"></div>
+            <input type="hidden" name="body" id="body-input">
 
             <x-form.field>
                 <x-form.label name="category_id"/>
@@ -29,64 +41,25 @@
     </x-setting>
 </x-layout>
 
-{{--<x-layout>--}}
-{{--    <x-setting :heading="'Edit Post: ' . $post->title">--}}
-{{--        <form method="POST" action="/admin/posts/{{ $post->id }}" enctype="multipart/form-data">--}}
-{{--            @csrf--}}
-{{--            @method('PATCH')--}}
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    // Initialize Quill editor
+    var quill = new Quill('#editor-container', {
+        theme: 'snow'
+    });
 
-{{--            <x-form.input name="title" :value="old('title', $post->title)" required />--}}
-{{--            <x-form.input name="slug" :value="old('slug', $post->slug)" required />--}}
+    // Set up the form submission
+    document.querySelector('#postForm').onsubmit = function() {
+        // Populate hidden input with Quill content before submitting
+        var bodyInput = document.querySelector('#body-input');
+        bodyInput.value = quill.root.innerHTML;
 
-{{--            <div class="flex mt-6">--}}
-{{--                <div class="flex-1">--}}
-{{--                    <x-form.input name="thumbnail" type="file" :value="old('thumbnail', $post->thumbnail)" />--}}
-{{--                </div>--}}
-
-{{--                <img src="{{ asset('storage/' . $post->thumbnail) }}" alt="" class="rounded-xl ml-6" width="100">--}}
-{{--            </div>--}}
-
-{{--            <div class="flex mt-6">--}}
-{{--                <div class="flex-1">--}}
-{{--                    <x-form.input name="images[]" type="file" multiple />--}}
-{{--                </div>--}}
-{{--                @foreach ($post->images as $image)--}}
-{{--                    <img src="{{ asset('storage/' . $image->path) }}" alt="" class="rounded-xl ml-6" width="100">--}}
-{{--                @endforeach--}}
-{{--            </div>--}}
-
-{{--            <div class="flex mt-6">--}}
-{{--                <div class="flex-1">--}}
-{{--                    <x-form.input name="videos[]" type="file" multiple />--}}
-{{--                </div>--}}
-{{--                @foreach ($post->videos as $video)--}}
-{{--                    <video width="320" height="240" controls class="rounded-xl ml-6">--}}
-{{--                        <source src="{{ asset('storage/' . $video->path) }}" type="video/mp4">--}}
-{{--                        Your browser does not support the video tag.--}}
-{{--                    </video>--}}
-{{--                @endforeach--}}
-{{--            </div>--}}
-
-{{--            <x-form.textarea name="excerpt" required>{{ old('excerpt', $post->excerpt) }}</x-form.textarea>--}}
-{{--            <x-form.textarea name="body" required>{{ old('body', $post->body) }}</x-form.textarea>--}}
-
-{{--            <x-form.field>--}}
-{{--                <x-form.label name="category"/>--}}
-
-{{--                <select name="category_id" id="category_id" required>--}}
-{{--                    @foreach (\App\Models\Category::all() as $category)--}}
-{{--                        <option--}}
-{{--                            value="{{ $category->id }}"--}}
-{{--                            {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}--}}
-{{--                        >{{ ucwords($category->name) }}</option>--}}
-{{--                    @endforeach--}}
-{{--                </select>--}}
-
-{{--                <x-form.error name="category"/>--}}
-{{--            </x-form.field>--}}
-
-{{--            <x-form.button>Update</x-form.button>--}}
-{{--        </form>--}}
-{{--    </x-setting>--}}
-{{--</x-layout>--}}
-
+        // Additional check to ensure the body is populated
+        if (bodyInput.value.trim() === "") {
+            alert("Post body cannot be empty!");
+            return false;
+        }
+    };
+</script>
+</body>
+</html>

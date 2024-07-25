@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -21,15 +20,24 @@ class AdminPostController extends Controller
         return view('admin.posts.create');
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        Post::create(array_merge($this->validatePost(), [
-            'user_id' => request()->user()->id,
-            'thumbnail' => request()->file('thumbnail')->store('thumbnails')
+        // Validate the request
+        $attributes = $this->validatePost();
+
+        // Store the thumbnail file if provided
+        if ($request->hasFile('thumbnail')) {
+            $attributes['thumbnail'] = $request->file('thumbnail')->store('thumbnails');
+        }
+
+        // Create the post
+        Post::create(array_merge($attributes, [
+            'user_id' => $request->user()->id,
         ]));
 
-        return redirect('/');
+        return redirect('/')->with('success', 'Post created successfully!');
     }
+
 
     public function edit(Post $post)
     {
@@ -40,27 +48,27 @@ class AdminPostController extends Controller
     {
         $attributes = $this->validatePost($post);
 
-        if ($attributes['thumbnail'] ?? false) {
-            $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
+        if ($request->hasFile('thumbnail')) {
+            $attributes['thumbnail'] = $request->file('thumbnail')->store('thumbnails');
         }
 
         $post->update($attributes);
 
-        if($request->hasFile('images')) {
+        if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $imagePath = $image->store('images');
-                Image:create([
-                    'post_id'=> $post->id,
+                Image::create([
+                    'post_id' => $post->id,
                     'path' => $imagePath
                 ]);
             }
         }
 
-        if($request->hasfile('videos')) {
+        if ($request->hasFile('videos')) {
             foreach ($request->file('videos') as $video) {
                 $videoPath = $video->store('videos');
-                Video:create::create([
-                    'post_id'=>$post->id,
+                Video::create([
+                    'post_id' => $post->id,
                     'path' => $videoPath
                 ]);
             }
@@ -88,7 +96,7 @@ class AdminPostController extends Controller
             'body' => 'required',
             'category_id' => ['required', Rule::exists('categories', 'id')],
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'videos.*' => 'mimes:mp4,webm,ogg,mpga,avi'
+            'videos.*' => 'mimes:mp4,webm,ogg,mpga,avi|max:20480'
         ]);
     }
 }
