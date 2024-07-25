@@ -28,7 +28,7 @@ class Welcome extends Mailable
             ->from('alejandro.jacvs@gmail.com')
             ->to($request->get('email'))
             ->subject('Welcome to HintPort')
-            ->view('emails.welcome');
+            ->markdown('emails.welcome');
     }
 
 //    /**

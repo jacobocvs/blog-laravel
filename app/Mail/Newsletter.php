@@ -27,7 +27,7 @@ class Newsletter extends Mailable
             ->from('alejandro.jacvs@gmail.com')
             ->to($request->get('email'))
             ->subject('Thank you for subscribing to our newsletter')
-            ->view('emails.newsletter');
+            ->markdown('emails.newsletter');
     }
 //    /**
 //     * Get the message envelope.

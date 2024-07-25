@@ -1,12 +1,11 @@
-{{--<x-emails::message>--}}
+@component('mail::message')
 Welcome.
 
-    Thank you for subscribing
+    Thank you for join my community
 
-{{--<x-emails::button :url="''">--}}
-{{--Button Text--}}
-{{--</x-emails::button>--}}
+@component('mail::button', ['url' => 'link'])
+@endcomponent
 
-{{--Thanks,<br>--}}
-{{--{{ config('app.name') }}--}}
-{{--</x-emails::message>--}}
+    Thanks,<br>
+    {{ config('app.name') }}
+@endcomponent

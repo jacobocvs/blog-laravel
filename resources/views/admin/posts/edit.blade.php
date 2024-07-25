@@ -1,6 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish New Post</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body>
 <x-layout>
     <x-setting :heading="'Edit Post: ' . $post->title">
-        <form method="POST" action="/admin/posts/{{ $post->id }}" enctype="multipart/form-data">
+        <form method="POST" action="/admin/posts/{{ $post->id }}" enctype="multipart/form-data" id="postForm">
             @csrf
             @method('PATCH')
 
@@ -16,7 +25,13 @@
             </div>
 
             <x-form.textarea name="excerpt" required>{{ old('excerpt', $post->excerpt) }}</x-form.textarea>
-            <x-form.textarea name="body" required>{{ old('body', $post->body) }}</x-form.textarea>
+            <x-form.edit-editor name="body" />
+            <div class="outline-none border border-gray-200 p-2 w-full rounded" style="max-width: 650px; margin: auto" id="editor">
+                {!! old('body', $post->body) !!}
+{{--                {{ old('body', $post->body) }}--}}
+            </div>
+            <input type="hidden" name="body" id="body-input">
+
 
             <x-form.field>
                 <x-form.label name="category"/>
@@ -37,3 +52,30 @@
         </form>
     </x-setting>
 </x-layout>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    // Initialize Quill editor
+    var quill = new Quill('#editor', {
+        modules: {
+            syntax: true,
+            toolbar: '#body'
+        },
+        theme: 'snow'
+    });
+
+    // Set up the form submission
+    document.querySelector('#postForm').onsubmit = function () {
+        // Populate hidden input with Quill content before submitting
+        var bodyInput = document.querySelector('#body-input');
+        bodyInput.value = quill.root.innerHTML;
+
+        // Additional check to ensure the body is populated
+        if (bodyInput.value.trim() === "") {
+            alert("Post body cannot be empty!");
+            return false;
+        }
+    };
+</script>
+</body>
+</html>

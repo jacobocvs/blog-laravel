@@ -12,13 +12,11 @@
         <form method="POST" action="/admin/posts" enctype="multipart/form-data" id="postForm">
             @csrf
 
-            <x-form.input name="title" required />
-            <x-form.input name="slug" required />
-            <x-form.input name="thumbnail" type="file" required />
-            <x-form.textarea name="excerpt" required />
-
-            <!-- Replace the textarea for 'body' with a div for Quill -->
-            <div id="editor-container" style="height: 400px;"></div>
+            <x-form.input name="title" required/>
+            <x-form.input name="slug" required/>
+            <x-form.input name="thumbnail" type="file" required/>
+            <x-form.textarea name="excerpt" required/>
+            <x-form.editor name="body"/>
             <input type="hidden" name="body" id="body-input">
 
             <x-form.field>
@@ -44,12 +42,16 @@
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
     // Initialize Quill editor
-    var quill = new Quill('#editor-container', {
+    var quill = new Quill('#editor', {
+        modules: {
+            syntax: true,
+            toolbar: '#body'
+        },
         theme: 'snow'
     });
 
     // Set up the form submission
-    document.querySelector('#postForm').onsubmit = function() {
+    document.querySelector('#postForm').onsubmit = function () {
         // Populate hidden input with Quill content before submitting
         var bodyInput = document.querySelector('#body-input');
         bodyInput.value = quill.root.innerHTML;
