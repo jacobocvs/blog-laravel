@@ -45,7 +45,7 @@
                     {{ $post->title }}
                 </h1>
 
-                <div class="space-y-4 lg:text-lg leading-loose">{!! $post->body !!}</div>
+                <div class="prose lg:prose-xl">{!! $post->body !!}</div>
             </div>
 
             <section class="col-span-8 col-start-5 mt-10 space-y-6">
