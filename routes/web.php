@@ -23,7 +23,8 @@ Route::post('login', [SessionsController::class, 'store'])->middleware('guest');
 Route::post('logout', [SessionsController::class, 'destroy'])->middleware('auth');
 
 Route::post('welcome',[EmailController::class, 'welcomeEmail']);
-Route::post('newsletter', [EmailController::class, 'newsletterEmail']);
+Route::post('newsletter', [EmailController::class, 'newsletterEmail'])->name('newsletter.subscribe');
+Route::get('newsletter', [EmailController::class, 'newsletterEmail'])->name('welcome.email');
 
 // Admin Section
 Route::middleware('can:admin')->group(function () {
